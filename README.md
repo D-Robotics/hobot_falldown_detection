@@ -1,129 +1,126 @@
-# 功能介绍
+English| [简体中文](./README_cn.md)
 
-hobot_falldown_detection package是订阅ai msg，接收到body_kps数据后判断人体是否摔倒并发布摔倒事件的人体摔倒检测算法示例。
-body_kps数据来源于订阅到的ai msg。
-摔倒事件使用自定义的hobot ai msg发布出去, 用户可以订阅此topic的ai msg用于应用开发。
+# Function Introduction
 
-# 编译
+The hobot_falldown_detection package subscribes to ai_msgs and determines whether a person has fallen down after receiving body_kps data, then publishes a fall event with a human fall detection algorithm example. The body_kps data is obtained from the subscribed ai_msgs. The fall event is published using a custom Hobot ai_msgs for users to subscribe to this topic for application development.
 
-## 依赖库
+# Compilation
 
-ros package：
+## Dependencies
+
+ROS package:
 
 - ai_msgs
 
-ai_msgs为自定义的消息格式，用于接收body_kps数据，发布推理结果，ai_msgs pkg定义在hobot_msgs中。
+ai_msgs is a custom message format used for receiving body_kps data and publishing inference results. The ai_msgs pkg is defined in the hobot_msgs.
 
-### 开发环境
+### Development Environment
 
-- 编程语言: C/C++
-- 开发平台: X3/X86
-- 系统版本：Ubuntu 20.0.4
-- 编译工具链:Linux GCC 9.3.0/Linaro GCC 9.3.0
+- Programming Language: C/C++
+- Development Platform: X3/X86
+- System Version: Ubuntu 20.0.4
+- Compilation Toolchain: Linux GCC 9.3.0/Linaro GCC 9.3.0
 
-### 编译
+### Compilation
 
-支持在X3 Ubuntu系统上编译和在PC上使用docker交叉编译两种方式。
+Supports compiling on X3 Ubuntu system and cross-compiling using docker on a PC.
 
-#### Ubuntu系统上编译
+#### Compilation on Ubuntu System
 
-1、编译环境确认
+1. Compilation Environment Confirmation
 
-    - 板端已安装X3 Ubuntu系统。
-    - 当前编译终端已设置TogetherROS环境变量：`source PATH/setup.bash`。其中PATH为TogetherROS的安装路径。
-    - 已安装ROS2编译工具colcon，安装命令：`pip install -U colcon-common-extensions`
+   - X3 Ubuntu system is installed on the board.
+   - The current compilation terminal has set the TogetherROS environment variable: `source PATH/setup.bash`. Where PATH is the installation path of TogetherROS.
+   - ROS2 compilation tool colcon has been installed, installation command: `pip install -U colcon-common-extensions`
 
-2、编译
+2. Compilation
 
-- 编译命令：`colcon build --packages-select hobot_falldown_detection`
+- Compilation command: `colcon build --packages-select hobot_falldown_detection`
 
-#### docker交叉编译
+#### Docker Cross-Compilation
 
-1、编译环境确认
+1. Compilation Environment Confirmation
 
-- 在docker中编译，并且docker中已经安装好TogetherROS。docker安装、交叉编译说明、TogetherROS编译和部署说明详见机器人开发平台robot_dev_config repo中的README.md。
+- Compilation is done in docker, and TogetherROS has been installed in docker. For docker installation, cross-compilation instructions, TogetherROS compilation, and deployment, please refer to the README.md in the robot development platform robot_dev_config repo.
 
-2、编译
+2. Compilation
 
-- 编译命令：
+- Compilation command:
 
-  ```
-  export TARGET_ARCH=aarch64
-  export TARGET_TRIPLE=aarch64-linux-gnu
-  export CROSS_COMPILE=/usr/bin/$TARGET_TRIPLE-
+  ``````bash
+export TARGET_ARCH=aarch64
+export TARGET_TRIPLE=aarch64-linux-gnu
+export CROSS_COMPILE=/usr/bin/$TARGET_TRIPLE-
 
-  colcon build --packages-select hobot_falldown_detection \
-     --merge-install \
-     --cmake-force-configure \
-     --cmake-args \
-     --no-warn-unused-cli \
-     -DCMAKE_TOOLCHAIN_FILE=`pwd`/robot_dev_config/aarch64_toolchainfile.cmake
-  ```
+colcon build --packages-select hobot_falldown_detection \
+   --merge-install \
+   --cmake-force-configure \
+   --cmake-args \
+   --no-warn-unused-cli \
+   -DCMAKE_TOOLCHAIN_FILE=`pwd`/robot_dev_config/aarch64_toolchainfile.cmake
+```
 
-## 注意事项
+## Notes
 
-# 使用介绍
+# User Guide
 
-## 依赖
+## Dependencies
 
-- mipi_cam package：发布图片msg
-- websocket package：渲染图片和ai感知msg
-- mono2d_body_detection package：人体kps检测
+- mipi_cam package: publish image msg
+- websocket package: render image and ai perception msg
+- mono2d_body_detection package: human pose keypoint detection
 
-## 参数
+## Parameters
 
-| 参数名         | 解释         | 是否必须   | 默认值        | 备注         |
-| ----------- | ---------- | ------ | ---------- | ---------- |
-| paramSensivity | 灵敏度 0:ExLow, 1:Low, 2:Middle, 3:High | 否 | 3 |            |
-| body_kps_topic_name | 订阅的ksp_point的topic | 否 | hobot_mono2d_body_detection | |
-| pub_smart_topic_name | 发布智能结果的topic | 否 | falldown_event     |  |
+| Parameter       | Explanation                | Required | Default Value | Remarks |
+| --------------- | -------------------------- | -------- | ------------- | ------- |
+| paramSensivity | Sensitivity 0:ExLow, 1:Low, 2:Middle, 3:High | No | 3 |            |
+| body_kps_topic_name | Subscribed topic for kps_point | No | hobot_mono2d_body_detection | |
+| pub_smart_topic_name | Topic to publish intelligent results | No | falldown_event |  |
 
-## 运行
+## Running
 
-编译成功后，将生成的install路径拷贝到地平线X3开发板上（如果是在X3上编译，忽略拷贝步骤），并执行如下命令运行
+After a successful build, copy the generated install path to the Horizon X3 development board (if compiling on X3, skip the copying step), and run the following command
 
 ### **Ubuntu**
 
-运行方式1，使用ros2 run启动：
+To run, use ros2 run startup method:
 
-```
+```bash
 export COLCON_CURRENT_PREFIX=./install
 source ./install/setup.bash
 
-# config中为示例使用的模型，根据实际安装路径进行拷贝
-# 如果是板端编译（无--merge-install编译选项），拷贝命令为cp -r install/PKG_NAME/lib/PKG_NAME/config/ .，其中PKG_NAME为具体的package名。
+# Copy the config as an example of the model used, copy based on the actual installation path
+# If compiling on board side (without --merge-install compile option), copy command is cp -r install/PKG_NAME/lib/PKG_NAME/config/ ., where PKG_NAME is the specific package name.
 
 cp -r install/lib/mono2d_body_detection/config/ .
 
-# 启动图片发布pkg
+# Start the image publishing package
 ros2 run mipi_cam mipi_cam --ros-args -p out_format:=nv12 -p image_width:=960 -p image_height:=544 -p io_method:=shared_mem --log-level error &
+```# Start jpeg image encoding & publishing pkg
+ros2 run hobot_codec hobot_codec_republish --ros-args -p channel:=1 -p in_mode:=shared_mem -p in_format:=nv12 -p out_mode:=ros -p out_format:=jpeg -p sub_topic:=/hbmem_img -p pub_topic:=/image_jpeg --ros-args  --log-level error &
 
-# 启动jpeg图片编码&发布pkg
-ros2 run hobot_codec hobot_codec_republish --ros-args -p channel:=1 -p in_mode:=shared_mem -p in_format:=nv12 -p out_mode:=ros -p out_format:=jpeg -p sub_topic:=/hbmem_img -p pub_topic:=/image_jpeg --ros-args --log-level error &
-
-# 启动单目rgb人体、人头、人脸、人手框和人体关键点检测pkg
+# Start monocular RGB body, head, face, hand bounding box, and body keypoints detection pkg
 ros2 run mono2d_body_detection mono2d_body_detection --ros-args --log-level error &
 
-# 启动web展示pkg
+# Start web display pkg
 ros2 run websocket websocket --ros-args -p image_topic:=/image_jpeg -p image_type:=mjpeg -p smart_topic:=/hobot_falldown_detection --ros-args --log-level error &
 
-# 启动跌倒检测pkg
-ros2 run hobot_falldown_detection hobot_falldown_detection --ros-args  -p paramSensivity:=3 -p body_kps_topic_name:=hobot_mono2d_body_detection -p pub_smart_topic_name:=/hobot_falldown_detection
-```
+# Start fall-down detection pkg
+ros2 run hobot_falldown_detection hobot_falldown_detection --ros-args -p paramSensivity:=3 -p body_kps_topic_name:=hobot_mono2d_body_detection -p pub_smart_topic_name:=/hobot_falldown_detection
 
-运行方式2，使用launch文件启动：
+Run method 2, using launch file:
 ```
 export COLCON_CURRENT_PREFIX=./install
 source ./install/setup.bash
 
-# config中为示例使用的模型，根据实际安装路径进行拷贝
-# 如果是板端编译（无--merge-install编译选项），拷贝命令为cp -r install/PKG_NAME/lib/PKG_NAME/config/ .，其中PKG_NAME为具体的package名。
+# Copy the model in the config to the actual installation path
+# If compiling on the edge (without the --merge-install option), the copy command is cp -r install/PKG_NAME/lib/PKG_NAME/config/ ., where PKG_NAME is the specific package name.
 
 cp -r install/lib/mono2d_body_detection/config/ .
 
-# 启动launch文件
+# Start the launch file
 ros2 launch install/share/hobot_falldown_detection/launch/hobot_falldown_detection.launch.py
-
 ```
 
 ### **Linux**
@@ -131,35 +128,32 @@ ros2 launch install/share/hobot_falldown_detection/launch/hobot_falldown_detecti
 export ROS_LOG_DIR=/userdata/
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:./install/lib/
 
-# config中为示例使用的模型，根据实际安装路径进行拷贝
+# Copy the model in the config to the actual installation path
 cp -r install/lib/mono2d_body_detection/config/ .
 
-# 启动图片发布pkg
+# Start image publishing pkg
 ./install/lib/mipi_cam/mipi_cam --ros-args -p out_format:=nv12 -p image_width:=960 -p image_height:=544 -p io_method:=shared_mem --log-level error &
 
-# 启动jpeg图片编码&发布pkg
+# Start jpeg image encoding & publishing pkg
 ./install/lib/hobot_codec/hobot_codec_republish --ros-args -p channel:=1 -p in_mode:=shared_mem -p in_format:=nv12 -p out_mode:=ros -p out_format:=jpeg -p sub_topic:=/hbmem_img -p pub_topic:=/image_jpeg --ros-args --log-level error &
 
-# 启动web展示pkg
+# Start web display pkg
 ./install/lib/websocket/websocket --ros-args -p image_topic:=/image_jpeg -p image_type:=mjpeg -p smart_topic:=/hobot_falldown_detection --log-level error &
 
-# 启动单目rgb人体、人头、人脸、人手框和人体关键点检测pkg
+# Start monocular RGB body, head, face, hand bounding box, and body keypoints detection pkg
 ./install/lib/mono2d_body_detection/mono2d_body_detection --ros-args --log-level error &
 
-# 启动跌倒检测pkg
-./install/lib/hobot_falldown_detection/hobot_falldown_detection --ros-args  -p paramSensivity:=3 -p body_kps_topic_name:=hobot_mono2d_body_detection -p pub_smart_topic_name:=/hobot_falldown_detection
-```
+# Start fall-down detection pkg
+./install/lib/hobot_falldown_detection/hobot_falldown_detection --ros-args -p paramSensivity:=3 -p body_kps_topic_name:=hobot_mono2d_body_detection -p pub_smart_topic_name:=/hobot_falldown_detection
+```## Notes
 
-## 注意事项
+To run the web display for the first time, you need to start the webserver service. Follow these steps:
 
-第一次运行web展示需要启动webserver服务，运行方法为:
+- Navigate to the deployment path of WebSocket: `cd install/lib/websocket/webservice/` (For board-side compilation without the `--merge-install` option, use `cd install/websocket/lib/websocket/webservice`)
+- Start nginx: `chmod +x ./sbin/nginx && ./sbin/nginx -p .`
 
-- cd 到websocket的部署路径下：`cd install/lib/websocket/webservice/`（如果是板端编译（无--merge-install编译选项）执行命令为`cd install/websocket/lib/websocket/webservice`）
-- 启动nginx：`chmod +x ./sbin/nginx && ./sbin/nginx -p .`
+# Analysis of Results
 
-# 结果分析
-
-## web效果展示
+## Web Display Effect
 
 ![image](./falldown.jpg)
-
