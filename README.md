@@ -47,7 +47,7 @@ Supports compiling on X3 Ubuntu system and cross-compiling using docker on a PC.
 
 - Compilation command:
 
-  ``````bash
+```bash
 export TARGET_ARCH=aarch64
 export TARGET_TRIPLE=aarch64-linux-gnu
 export CROSS_COMPILE=/usr/bin/$TARGET_TRIPLE-
@@ -97,7 +97,8 @@ cp -r install/lib/mono2d_body_detection/config/ .
 
 # Start the image publishing package
 ros2 run mipi_cam mipi_cam --ros-args -p out_format:=nv12 -p image_width:=960 -p image_height:=544 -p io_method:=shared_mem --log-level error &
-```# Start jpeg image encoding & publishing pkg
+
+# Start jpeg image encoding & publishing pkg
 ros2 run hobot_codec hobot_codec_republish --ros-args -p channel:=1 -p in_mode:=shared_mem -p in_format:=nv12 -p out_mode:=ros -p out_format:=jpeg -p sub_topic:=/hbmem_img -p pub_topic:=/image_jpeg --ros-args  --log-level error &
 
 # Start monocular RGB body, head, face, hand bounding box, and body keypoints detection pkg
@@ -110,7 +111,7 @@ ros2 run websocket websocket --ros-args -p image_topic:=/image_jpeg -p image_typ
 ros2 run hobot_falldown_detection hobot_falldown_detection --ros-args -p paramSensivity:=3 -p body_kps_topic_name:=hobot_mono2d_body_detection -p pub_smart_topic_name:=/hobot_falldown_detection
 
 Run method 2, using launch file:
-```
+
 export COLCON_CURRENT_PREFIX=./install
 source ./install/setup.bash
 
@@ -145,7 +146,9 @@ cp -r install/lib/mono2d_body_detection/config/ .
 
 # Start fall-down detection pkg
 ./install/lib/hobot_falldown_detection/hobot_falldown_detection --ros-args -p paramSensivity:=3 -p body_kps_topic_name:=hobot_mono2d_body_detection -p pub_smart_topic_name:=/hobot_falldown_detection
-```## Notes
+```
+
+## Notes
 
 To run the web display for the first time, you need to start the webserver service. Follow these steps:
 
