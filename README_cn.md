@@ -82,7 +82,7 @@ ai_msgs为自定义的消息格式，用于接收body_kps数据，发布推理�
 
 ## 运行
 
-编译成功后，将生成的install路径拷贝到地平线X3开发板上（如果是在X3上编译，忽略拷贝步骤），并执行如下命令运行
+编译成功后，将生成的install路径拷贝到RDK X3开发板上（如果是在X3上编译，忽略拷贝步骤），并执行如下命令运行
 
 ### **Ubuntu**
 
@@ -165,7 +165,7 @@ cp -r install/lib/mono2d_body_detection/config/ .
 
 ![image](./falldown.jpg)
 
-��nginx：`chmod +x ./sbin/nginx && ./sbin/nginx -p .`
+��nginx：`chmod +x ./sbin/nginx && ./sbin/nginx -p .`
 
 # 结果分析
 

@@ -80,7 +80,7 @@ colcon build --packages-select hobot_falldown_detection \
 
 ## Running
 
-After a successful build, copy the generated install path to the Horizon X3 development board (if compiling on X3, skip the copying step), and run the following command
+After a successful build, copy the generated install path to the RDK X3 development board (if compiling on X3, skip the copying step), and run the following command
 
 ### **Ubuntu**
 
